@@ -21,17 +21,23 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			</http:response>
 			<http:error-response reasonPhrase="Success" />
 		</http:listener>
-		<set-variable value="#[message.attributes.queryParams.fname]" doc:name="firstName" doc:id="aeaba644-2ac5-4393-a137-5e6aa1816150" variableName="firstName"/>
-		<set-payload value="Hello" doc:name="Hello" doc:id="52eacc88-2a9f-4424-9acd-0ebe9287f024" />
+		<flow-ref doc:name="subFlow" doc:id="d7d6fd99-cfc4-47c0-b43a-658c8c8b9744" name="subFlow"/>
+		<flow-ref doc:name="privateFlow" doc:id="524fdc63-211e-4d3c-9123-e3d6f7c2f661" name="privateFlow" />
+		<logger level="INFO" doc:name="payload" doc:id="0aae7ef6-0605-4a67-a06a-92c8059cabba" message="#['\nMessage ' ++ payload]"/>
+	</flow>
+	<flow name="privateFlow" doc:id="846fc3c9-5055-40d0-80c0-8c1e6641b18e">
 		<http:request method="GET" doc:name="GET /goodbye" doc:id="29a7be9c-33f7-4b74-ac7f-c8b337d6d568" config-ref="HTTP_Request_configuration" path="/goodbye" responseTimeout="300000" requestStreamingMode="NEVER">
-			<http:query-params ><![CDATA[#[output application/java
+			<http:query-params><![CDATA[#[output application/java
 ---
 {
 	"fullName" : attributes.queryParams.fname
 }]]]></http:query-params>
 		</http:request>
-		<logger level="INFO" doc:name="payload" doc:id="0aae7ef6-0605-4a67-a06a-92c8059cabba" message="#['\nMessage ' ++ payload]"/>
 	</flow>
+	<sub-flow name="subFlow" doc:id="5691d0c3-8cd5-41d3-baff-74b844d1ec2b" >
+		<set-variable value="#[message.attributes.queryParams.fname]" doc:name="firstName" doc:id="aeaba644-2ac5-4393-a137-5e6aa1816150" variableName="firstName" />
+		<set-payload value="Hello" doc:name="Hello" doc:id="52eacc88-2a9f-4424-9acd-0ebe9287f024" />
+	</sub-flow>
 	<flow name="goodbyeFlow" doc:id="ba781db1-ce26-49c0-b2e1-8872d71da45a" >
 		<http:listener doc:name="GET /goodbye" doc:id="17c97834-f445-42fe-8780-cd5791d43b4c" config-ref="HTTP_Listener_config" path="/goodbye" allowedMethods="GET"/>
 		<set-payload value="#[upper('Goodbye') ++ ' ' ++ (attributes.queryParams.fullName&#10;default 'Maxine')]" doc:name="Goodbye" doc:id="559b7ce9-8345-45f3-a071-fbee5b973f6a" />
