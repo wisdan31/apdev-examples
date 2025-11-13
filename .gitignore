@@ -45,3 +45,9 @@ target/
 .mule/
 .DS_Store
 velocity.log
+
+
+# ------- #
+# Configs #
+# ------- #
+secure-config.yaml
