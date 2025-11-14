@@ -10,4 +10,7 @@ http://www.mulesoft.org/schema/mule/american-flights-api http://www.mulesoft.org
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
 	<american-flights-api:config name="American_Flights_API_Config" doc:name="American Flights API Config" doc:id="5a147921-77a0-45a2-ad5d-79e5b65b3d41" property_host="${american.host}" property_port="${american.port}" property_basePath="${american.basepath}" property_protocol="${american.protocol}" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="8f99d2e7-1b65-4aeb-b849-a98af178e5cc" basePath="${training.basepath}" >
+		<http:request-connection host="${training.host}" port="${training.port}" />
+	</http:request-config>
 </mule>
