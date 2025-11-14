@@ -14,3 +14,8 @@ training:
   port: "80"
   basepath: "/"
   protocol: "HTTP"
+  
+delta:
+  wsdl: "http://mu.mule-training.com/delta?wsdl"
+  service: "TicketServiceService"
+  port: "DeltaFlightsServiceImplPort"
