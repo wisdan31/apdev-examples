@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_98bd61cd_35ea_44e8_a8da_82f888da5d43_Output_Variables_code = "LAX" | "SFO" | "CLE"
+
