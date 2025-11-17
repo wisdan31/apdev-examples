@@ -9,7 +9,8 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="getFlights" doc:id="af623056-ba4e-4680-a569-4089511c8307" >
-		<http:listener doc:name="GET /flights" doc:id="109fc5ed-9ab2-4900-9533-36adff8ae216" config-ref="HTTP_Listener_config" path="/flights" allowedMethods="GET" />
+		<http:listener doc:name="GET /flights" doc:id="109fc5ed-9ab2-4900-9533-36adff8ae216" config-ref="HTTP_Listener_config" path="/flights" allowedMethods="GET" >
+		</http:listener>
 		<set-variable value="#[message.attributes.queryParams.airline]" doc:name="airline" doc:id="3d157856-1c6b-439b-b836-8dba3afe4b36" variableName="airline"/>
 		<flow-ref doc:name="setCode" doc:id="38317de0-715d-4e34-93d7-900b730bbb22" name="setCode"/>
 		<validation:is-true doc:name="Is valid" doc:id="9719509a-1c14-4198-9d86-fe8701c1c486" expression="#[['SFO','LAX','CLE','PDX','PDF'] contains vars.code]" message="#['Invalid destination' ++ ' ' ++ (vars.code default ' ')]"/>
