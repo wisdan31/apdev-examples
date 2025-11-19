@@ -10,7 +10,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="getFlights" doc:id="af623056-ba4e-4680-a569-4089511c8307" >
 		<http:listener doc:name="GET /flights" doc:id="109fc5ed-9ab2-4900-9533-36adff8ae216" config-ref="HTTP_Listener_config" path="/flights" allowedMethods="GET" >
-			<http:error-response >
+			<http:response statusCode="#[vars.httpStatus default 200]" />
+			<http:error-response statusCode="#[vars.httpStatus default 500]">
 				<http:body ><![CDATA[#[payload]]]></http:body>
 			</http:error-response>
 		</http:listener>
@@ -40,6 +41,34 @@ payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="beaa3394-dc23-4690-a954-b8c8dccb6fca" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="973ab17f-cb47-4dfe-9c96-7c0b6f941d21" type="AMERICAN-FLIGHTS-API:BAD_REQUEST">
+				<ee:transform doc:name="Transform Message" doc:id="f01d5910-c005-41d5-bb95-f44a6b0a9d28" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "No flights to " ++ vars.code as String
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="200" doc:name="httpStatus" doc:id="eb6dccce-4edb-458d-b729-3ced769d4c59" variableName="httpStatus"/>
+			</on-error-propagate>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="72cc3495-dbb2-4fbd-9226-67aad95c40da" >
+				<ee:transform doc:name="error.description" doc:id="b1d57335-c439-4463-9445-d68763a6e096" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": error.description
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="400" doc:name="httpStatus" doc:id="b696342c-ed50-44c6-8674-5052e6b038cf" variableName="httpStatus"/>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 	<flow name="getAllAirlineFlights" doc:id="0cf9290c-4236-4188-b443-39bdb65c5fb2" >
 		<scatter-gather doc:name="Scatter-Gather" doc:id="7226c17e-fc96-4751-8459-e06c6387efd1" >
