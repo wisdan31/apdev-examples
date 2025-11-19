@@ -55,7 +55,7 @@ output application/json
 				</ee:transform>
 				<set-variable value="200" doc:name="httpStatus" doc:id="eb6dccce-4edb-458d-b729-3ced769d4c59" variableName="httpStatus"/>
 			</on-error-propagate>
-			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="72cc3495-dbb2-4fbd-9226-67aad95c40da" >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="72cc3495-dbb2-4fbd-9226-67aad95c40da" type="VALIDATION:INVALID_BOOLEAN">
 				<ee:transform doc:name="error.description" doc:id="b1d57335-c439-4463-9445-d68763a6e096" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
