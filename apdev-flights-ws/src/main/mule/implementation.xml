@@ -73,13 +73,55 @@ output application/json
 	<flow name="getAllAirlineFlights" doc:id="0cf9290c-4236-4188-b443-39bdb65c5fb2" >
 		<scatter-gather doc:name="Scatter-Gather" doc:id="7226c17e-fc96-4751-8459-e06c6387efd1" >
 			<route >
-				<flow-ref doc:name="getAmericanFlights" doc:id="3b656f25-efee-4a70-869e-b1bc74a751be" name="getAmericanFlights"/>
+				<try doc:name="Try" doc:id="4d011c50-a4fb-4266-a5cd-5bf0d5da8c04" >
+					<flow-ref doc:name="getAmericanFlights" doc:id="3b656f25-efee-4a70-869e-b1bc74a751be" name="getAmericanFlights" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8515562b-9316-42d2-b884-39cf0ba9ff08" type="ANY">
+							<ee:transform doc:name="[]" doc:id="383570fe-133c-4ea3-a764-dc252d9545de" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[]]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						</on-error-continue>
+					</error-handler>
+				</try>
 			</route>
 			<route >
-				<flow-ref doc:name="getUnitedFlights" doc:id="2a906e1f-e058-4ebd-8661-5fd18168e39e" name="getUnitedFlights"/>
+				<try doc:name="Try" doc:id="8ffeb5ba-633e-4366-856a-7923d1ff5b84" >
+					<flow-ref doc:name="getUnitedFlights" doc:id="2a906e1f-e058-4ebd-8661-5fd18168e39e" name="getUnitedFlights" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="237f9900-1f5b-4631-a2a3-6b1d28facd83" type="ANY">
+							<ee:transform doc:name="[]" doc:id="8ef2a58a-4e18-4273-9fcd-0d403ecd055b" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[]]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						</on-error-continue>
+					</error-handler>
+				</try>
 			</route>
 			<route >
-				<flow-ref doc:name="getDeltaFlights" doc:id="e622e797-a728-4e71-8e14-379155fd5ab2" name="getDeltaFlights"/>
+				<try doc:name="Try" doc:id="8a592ef4-add5-42be-a5e5-93040f527130" >
+					<flow-ref doc:name="getDeltaFlights" doc:id="e622e797-a728-4e71-8e14-379155fd5ab2" name="getDeltaFlights" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="fa82b470-ff47-43ae-bf61-64c2aa0986d3" type="ANY">
+							<ee:transform doc:name="[]" doc:id="22b4d88f-0d47-44e6-b561-5494463cdc0a" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[]]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						</on-error-continue>
+					</error-handler>
+				</try>
 			</route>
 		</scatter-gather>
 		<ee:transform doc:name="flatten to [Flight]" doc:id="25e156b2-2c9c-4491-9aab-cc5bd7708b47" >
