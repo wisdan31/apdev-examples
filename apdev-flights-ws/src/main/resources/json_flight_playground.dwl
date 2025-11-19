@@ -1,4 +1,8 @@
 %dw 2.0
-output application/java
+output application/json
 ---
-payload
+data: {
+	hub: "MUA",
+	code: payload.toAirportCode,
+	airline: payload.airline
+}
