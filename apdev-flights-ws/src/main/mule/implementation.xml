@@ -209,4 +209,18 @@ payload.body.ns0#findFlightResponse.*return map ( return , indexOfReturn ) -> {
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="b655139b-76e9-4d72-b278-097a8a3e5a9b" />
 	</flow>
+	<flow name="postFlight" doc:id="954c163a-896f-4791-8064-0cf8c68b988e" >
+		<ee:transform doc:name="Transform Message" doc:id="5c8129b0-de52-4545-9ef7-bf7bf360dfc2" >
+			<ee:message >
+				<ee:set-payload resource="json_flight_playground.dwl" />
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="DWoutput" ><![CDATA[%dw 2.0
+output application/xml
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="f3bb4126-e453-44cc-9be1-45fe4e43b65a" />
+	</flow>
 </mule>
