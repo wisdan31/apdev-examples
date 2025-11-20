@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<flow name="recieveJMSMessages" doc:id="1d64e4c5-11bb-456c-aba9-f3cd15a0f1d0" >
+		<jms:listener doc:name="JMS accountsQ" doc:id="839972ac-23c0-411f-a109-588f80f2e8a9" config-ref="JMS_Config" destination="accountsQ">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="payload" doc:id="1620d7de-e146-4fa8-91f2-09c3e83156be" message="#[payload]"/>
+	</flow>
 	<flow name="syncDBaccountsWithPostal" doc:id="cc65c9bc-15e6-4255-b5c2-f543a46afafc" >
 		<scheduler doc:name="Scheduler" doc:id="177105e7-6938-490d-afe3-da4fefda94bb" >
 			<scheduling-strategy >
@@ -31,6 +40,12 @@ WHERE postal = :postal AND accountID > :lastAccountID]]></db:sql>
 				<file:write doc:name="DBaccountsPostal.csv" doc:id="95500955-fdf9-4181-a0ed-2b02cd967a3e" config-ref="File_Config" path="output/DBaccountsPostal.csv" mode="APPEND">
 			<file:content><![CDATA[#[output application/csv header=false --- payload]]]></file:content>
 		</file:write>
+				<jms:publish doc:name="JMS accountsQ" doc:id="22ed0bd5-89fb-4cbf-acbb-80fe8eadd9da" config-ref="JMS_Config" destination="accountsQ">
+					<jms:message >
+						<jms:body ><![CDATA[#[output application/json --- payload]]]></jms:body>
+						<jms:properties ><![CDATA[#[{"publisher":"training"}]]]></jms:properties>
+					</jms:message>
+				</jms:publish>
 				<logger level="INFO" doc:name="Logger" doc:id="f5704ffb-7b6c-46a3-8027-b595677acd0b" message="#[output application/csv --- payload]" />
 			</when>
 			<otherwise >
