@@ -3,3 +3,6 @@ http:
   
 sfdc:
   username: "forspamletters734@agentforce.com"
+  
+file:
+  accountsDir: "C:/Mule/CDEV-DEX401-EN-07Jun2024-Student-Files_SP/resources"
